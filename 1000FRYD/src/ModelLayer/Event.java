@@ -8,7 +8,7 @@ public class Event {
 	private String description;
 	private int startHour;
 	private int endHour;
-	private ArrayList<Event> eventList;
+	private ArrayList<Person> guestList;
 	
 	public Event(int id, String name, String description, int startHour,
 			int endHour) {
@@ -18,7 +18,7 @@ public class Event {
 		this.description = description;
 		this.startHour = startHour;
 		this.endHour = endHour;
-		eventList = new ArrayList<Event>();
+		guestList = new ArrayList<Person>();
 	}
 	
 	public int getId() {
@@ -48,6 +48,13 @@ public class Event {
 	public void setEndHour(int endHour) {
 		this.endHour = endHour;
 	}
+	public void addGuest(Person person)
+	{
+		guestList.add(person);
+	}
 	
-	
+	public void removeGuest(Person person)
+	{
+		guestList.remove(person);
+	}
 }

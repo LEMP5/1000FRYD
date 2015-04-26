@@ -5,7 +5,6 @@ import java.util.ArrayList;
 public class Volunteer extends Person{
 	private int bartokens;
 	private boolean paid;
-	private boolean allowed;
 	private boolean available;
 	
 	private ArrayList<Experience> experienceList;
@@ -45,14 +44,6 @@ public class Volunteer extends Person{
 		super(name, telephoneNo, email);
 		// TODO Auto-generated constructor stub
 		bartokens = 0;
-	}
-
-	public boolean isAllowed() {
-		return allowed;
-	}
-
-	public void setAllowed(boolean allowed) {
-		this.allowed = allowed;
 	}
 
 	public boolean isAvailable() {
