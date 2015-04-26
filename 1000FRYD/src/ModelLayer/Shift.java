@@ -15,7 +15,6 @@ public class Shift {
 		this.worker = worker;
 	}
 	
-	
 	public int getXpRequired() {
 		return xpRequired;
 	}

@@ -4,19 +4,40 @@ import java.util.ArrayList;
 
 public class Volunteer extends Person{
 	private int bartokens;
+	private boolean paid;
+	private boolean allowed;
+	private boolean available;
 	
 	private ArrayList<Experience> experienceList;
 
 	public ArrayList<Experience> getExperience() {
 		return experienceList;
 	}
+	
+	private Experience hasExperience(String job)
+	{
+		for(Experience xp: experienceList)
+		{
+			if(xp.getJob().equals(job))
+				return xp;
+		}
+		return null;
+	}
 
-	public void addExperience(Experience xp) {
-		experienceList.add(xp);
+	public void addExperience(String job) {
+		Experience xp = hasExperience(job);
+		if(xp!=null)
+			xp.setShifts(xp.getShifts()+1);
+		else
+			experienceList.add(xp);
 	}
 	
-	public void removeExperience(Experience xp) {
-		experienceList.remove(xp);
+	public void removeExperience(String job) {
+		Experience xp = hasExperience(job);
+		if(xp!=null)
+			xp.setShifts(xp.getShifts()-1);
+		else
+			System.out.println("No shifts to remove");
 	}
 
 
@@ -26,6 +47,22 @@ public class Volunteer extends Person{
 		bartokens = 0;
 	}
 
+	public boolean isAllowed() {
+		return allowed;
+	}
+
+	public void setAllowed(boolean allowed) {
+		this.allowed = allowed;
+	}
+
+	public boolean isAvailable() {
+		return available;
+	}
+
+	public void setAvailable(boolean available) {
+		this.available = available;
+	}
+
 	public int getBartokens() {
 		return bartokens;
 	}
@@ -33,5 +70,14 @@ public class Volunteer extends Person{
 	public void setBartokens(int bartokens) {
 		this.bartokens = bartokens;
 	}
+
+	public boolean isPaid() {
+		return paid;
+	}
+
+	public void setPaid(boolean paid) {
+		this.paid = paid;
+	}
+	
 	
 }
