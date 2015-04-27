@@ -8,6 +8,7 @@ public class Event {
 	private String description;
 	private int startHour;
 	private int endHour;
+	private String type;
 	private ArrayList<Person> guestList;
 	
 	public Event(int id, String name, String description, int startHour,
@@ -21,6 +22,16 @@ public class Event {
 		guestList = new ArrayList<Person>();
 	}
 	
+	
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public void setId(int id) {
+		this.id = id;
+	}
 	public int getId() {
 		return id;
 	}
@@ -52,7 +63,6 @@ public class Event {
 	{
 		guestList.add(person);
 	}
-	
 	public void removeGuest(Person person)
 	{
 		guestList.remove(person);

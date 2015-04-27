@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 public class Group {
 	private String name;
-	private String job;
+	private String type;
 	private ArrayList<Person> personList;
 	
 	public Group(String name, String job) {
 		super();
 		this.name = name;
-		this.job = job;
+		this.type = job;
 		this.personList = new ArrayList<Person>();
 	}
 
@@ -22,12 +22,12 @@ public class Group {
 		this.name = name;
 	}
 
-	public String getJob() {
-		return job;
+	public String getType() {
+		return type;
 	}
 
-	public void setJob(String job) {
-		this.job = job;
+	public void setType(String type) {
+		this.type = type;
 	}
 
 	public ArrayList<Person> getPersonList() {
