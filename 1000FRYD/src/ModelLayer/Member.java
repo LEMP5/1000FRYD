@@ -1,14 +1,14 @@
 package ModelLayer;
 
-public class Member extends Person{
+public class Member extends People{
 	private String signUpDate;
 	private String roomReserved;
 	private int daysReserved;
 
 
-	public Member(String name, String telephoneNo, String email,
+	public Member(String name, String surname, String telephoneNo, String email,
 			String signUpDate, String roomReserved, int daysReserved) {
-		super(name, telephoneNo, email);
+		super(name, surname, telephoneNo, email);
 		this.signUpDate = signUpDate;
 		this.roomReserved = roomReserved;
 		this.daysReserved = daysReserved;

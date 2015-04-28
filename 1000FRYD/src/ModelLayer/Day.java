@@ -8,13 +8,12 @@ public class Day {
 	private ArrayList<Shift> shiftList;
 	private ArrayList<Event> eventList;
 	
-	public Day(String date, String dayOfWeek, ArrayList<Shift> shiftList,
-			ArrayList<Event> eventList) {
+	public Day(String date, String dayOfWeek) {
 		super();
 		this.date = date;
 		this.dayOfWeek = dayOfWeek;
-		this.shiftList = shiftList;
-		this.eventList = eventList;
+		this.shiftList = new ArrayList<Shift>();
+		this.eventList = new ArrayList<Event>();
 	}
 	
 	public String getDate() {
