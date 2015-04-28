@@ -4,10 +4,10 @@ public class Shift {
 	private String job;
 	private int startHour;
 	private int endHour;
-	private Person worker;
+	private People worker;
 	private int xpRequired;
 	
-	public Shift(String job, int startHour, int endHour, Person worker) {
+	public Shift(String job, int startHour, int endHour, People worker) {
 		super();
 		this.job = job;
 		this.startHour = startHour;
@@ -39,10 +39,10 @@ public class Shift {
 	public void setEndHour(int endHour) {
 		this.endHour = endHour;
 	}
-	public Person getWorker() {
+	public People getWorker() {
 		return worker;
 	}
-	public void setWorker(Person worker) {
+	public void setWorker(People worker) {
 		this.worker = worker;
 	}
 	

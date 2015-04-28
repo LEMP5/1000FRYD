@@ -2,7 +2,7 @@ package ModelLayer;
 
 import java.util.ArrayList;
 
-public class Volunteer extends Person{
+public class Volunteer extends People{
 	private int bartokens;
 	private boolean paid;
 	private boolean available;
@@ -40,8 +40,8 @@ public class Volunteer extends Person{
 	}
 
 
-	public Volunteer(String name, String telephoneNo, String email) {
-		super(name, telephoneNo, email);
+	public Volunteer(String name, String surname, String telephoneNo, String email) {
+		super(name, surname, telephoneNo, email);
 		// TODO Auto-generated constructor stub
 		bartokens = 0;
 	}

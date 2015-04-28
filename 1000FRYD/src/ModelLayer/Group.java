@@ -5,13 +5,13 @@ import java.util.ArrayList;
 public class Group {
 	private String name;
 	private String type;
-	private ArrayList<Person> personList;
+	private ArrayList<People> personList;
 	
 	public Group(String name, String job) {
 		super();
 		this.name = name;
 		this.type = job;
-		this.personList = new ArrayList<Person>();
+		this.personList = new ArrayList<People>();
 	}
 
 	public String getName() {
@@ -30,16 +30,16 @@ public class Group {
 		this.type = type;
 	}
 
-	public ArrayList<Person> getPersonList() {
+	public ArrayList<People> getPersonList() {
 		return personList;
 	}
 
-	public void addPerson(Person person) {
-		personList.add(person);
+	public void addPerson(People people) {
+		personList.add(people);
 	}
 	
-	public void removePerson(Person person) {
-		personList.remove(person);
+	public void removePerson(People people) {
+		personList.remove(people);
 	}
 
 }
