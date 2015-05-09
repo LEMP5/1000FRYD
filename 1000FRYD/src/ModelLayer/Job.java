@@ -7,19 +7,36 @@ public class Job {
 	private int bartokens;
 	private String room;
 	private int dateLastUsed;
+	private int duration;
 	private ArrayList<Shift> shiftList;
 	
-	public Job(String name, int bartokens, String room, int dateLastUsed) {
+	public Job(String name, int bartokens, String room, int dateLastUsed, int duration) {
 		super();
 		this.name = name;
 		this.bartokens = bartokens;
 		this.room = room;
+		this.duration = duration;
 		this.dateLastUsed = dateLastUsed;
 		shiftList = new ArrayList<Shift>();
 	}
 	
+	public ArrayList<Shift> getShiftList(){
+		return shiftList;
+	}
 	public void addShift(Shift shift){
 		shiftList.add(shift);
+	}
+	public void removeShift(Shift shift){
+		shiftList.remove(shift);
+	}
+	public int getDuration() {
+		return duration;
+	}
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+	public void setShiftList(ArrayList<Shift> shiftList) {
+		this.shiftList = shiftList;
 	}
 	public String getName() {
 		return name;
@@ -45,6 +62,4 @@ public class Job {
 	public void setDateLastUsed(int dateLastUsed) {
 		this.dateLastUsed = dateLastUsed;
 	}
-	
-
 }

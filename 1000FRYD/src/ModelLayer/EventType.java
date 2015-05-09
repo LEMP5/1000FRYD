@@ -26,12 +26,16 @@ public class EventType {
 	public void setJobList(ArrayList<Job> jobList) {
 		this.jobList = jobList;
 	}
+	public void addShift(Job job){
+		jobList.add(job);
+	}
+	public void removeShift(Job job){
+		jobList.remove(job);
+	}
 	public int getDateLastUsed() {
 		return dateLastUsed;
 	}
 	public void setDateLastUsed(int dateLastUsed) {
 		this.dateLastUsed = dateLastUsed;
 	}
-	
-
 }
