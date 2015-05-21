@@ -16,7 +16,6 @@ public class Day {
 		this.eventList = new ArrayList<Event>();
 	}
 	public Day() {
-		
 	}
 	
 	public String getDate() {
