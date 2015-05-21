@@ -15,6 +15,9 @@ public class Day {
 		this.shiftList = new ArrayList<Shift>();
 		this.eventList = new ArrayList<Event>();
 	}
+	public Day() {
+		
+	}
 	
 	public String getDate() {
 		return date;
