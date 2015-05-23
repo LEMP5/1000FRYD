@@ -828,7 +828,7 @@ public class CalendarMenu extends JFrame {
 		tabPerson.setLayout(null);
 	}
 	
-	private void peopleTabs(String tabName) {hjbjlk
+	private void peopleTabs(String tabName) {
 		
 	}
 	

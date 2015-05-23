@@ -4,7 +4,6 @@ public class Experience {
 	private String job;
 	private int shifts;
 	public Experience(String job, int shifts) {
-		super();
 		this.job = job;
 		this.shifts = shifts;
 	}

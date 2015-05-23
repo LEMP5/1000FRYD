@@ -3,15 +3,15 @@ package ModelLayer;
 public class Member extends People{
 	private String signUpDate;
 	private String roomReserved;
-	private int daysReserved;
-
-
-	public Member(String name, String surname, String telephoneNo, String email,
-			String signUpDate, String roomReserved, int daysReserved) {
-		super(name, surname, telephoneNo, email);
+	private String periodReserved;
+	
+	public Member(String telephoneNo, String name, String surname,
+			String language, String password, boolean privilege, String email,
+			String signUpDate, String roomReserved, String periodReserved) {
+		super(telephoneNo, name, surname, language, password, privilege, email);
 		this.signUpDate = signUpDate;
 		this.roomReserved = roomReserved;
-		this.daysReserved = daysReserved;
+		this.periodReserved = periodReserved;
 	}
 
 	public String getSignUpDate() {
@@ -30,13 +30,12 @@ public class Member extends People{
 		this.roomReserved = roomReserved;
 	}
 
-	public int getDaysReserved() {
-		return daysReserved;
+	public String getPeriodReserved() {
+		return periodReserved;
 	}
 
-	public void setDaysReserved(int daysReserved) {
-		this.daysReserved = daysReserved;
+	public void setPeriodReserved(String periodReserved) {
+		this.periodReserved = periodReserved;
 	}
-
 	
 }
