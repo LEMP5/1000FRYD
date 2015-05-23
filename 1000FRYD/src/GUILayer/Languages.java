@@ -111,13 +111,13 @@ public class Languages
 		switch(chooseOfLanguage)
 		{
 			case 1:
-				list = new String[] {"Name", "Surname", "Email", "Phone", "Privilages", "Phone", "Qualifications", "Bar tokens"};
+				list = new String[] {"Name", "Surname", "Email", "Phone", "Affiliation", "Phone", "Qualifications", "Bar tokens"};
 			break;
 			case 2:
 				list = new String[] {"Navn", "", "", "", "", "", "", ""};
 			break;
 			case 3:
-				list = new String[] {"Imię", "Nazwisko", "Email", "Telefon", "Uprawnienia", "Telefon", "Kwalifikacje", "Kupony"};
+				list = new String[] {"Imię", "Nazwisko", "Email", "Telefon", "Przynależność", "Telefon", "Kwalifikacje", "Kupony"};
 			break;
 			case 4:
 				list = new String[] {"Nume", "", "", "", "", "", "", ""};

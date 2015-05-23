@@ -32,10 +32,6 @@ import java.awt.SystemColor;
 import javax.swing.JToggleButton;
 
 public class CalendarCell extends JFrame {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Languages language;

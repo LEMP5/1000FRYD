@@ -119,4 +119,24 @@ public class DbConnection
     		System.out.println(e.getMessage());
     	}
     }
+    public boolean statusConnection()
+	{
+		boolean state = false;
+//		try {
+//			connection.isValid(1000);
+//		} catch (SQLException e1) {
+//			e1.printStackTrace();
+//		}
+		try {
+			Statement stmt = connection.createStatement();
+			stmt.setQueryTimeout(3);
+			stmt.executeQuery("select 1");//System.out.println(""+stmt.executeQuery("select 1"));
+			stmt.close();
+			state = true;
+		}
+		catch (Exception e) {
+			System.out.println(""+e);
+		}
+		return state;
+	}
 }//end DbConnection

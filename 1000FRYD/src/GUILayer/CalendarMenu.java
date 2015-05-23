@@ -2,6 +2,8 @@ package GUILayer;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.Font;
@@ -15,6 +17,8 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.border.Border;
@@ -38,6 +42,10 @@ import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.JScrollBar;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
@@ -46,20 +54,39 @@ import javax.swing.JToggleButton;
 import javax.swing.UIManager;
 import javax.swing.JCheckBox;
 
+import ControlLayer.*;
+import DBLayer.*;
+import ModelLayer.*;
+
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeEvent;
+import java.util.ArrayList;
+
+import javax.swing.event.ChangeListener;
+import javax.swing.event.ChangeEvent;
+
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+
 public class CalendarMenu extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private Languages language;
 	private Time time;
-	//private CalendarControl control;
+	private People[] user;
+	private CtrPeople ctrPeople;
+	private CtrGroup ctrG;
 	private JPanel contentPane;
 	private JPanel topPanel;
 	private JPanel changePanelMiddle;
-	private JTextField phononeT;
-	private JTextField tokensT;
-	private JPanel changePanel_2;
-	private JPanel changePanel_3;
+	private JPanel groupPanel1;
+	private JPanel peoplePanel;
+	private JPanel tabVolunteer;
+	private JPanel tabMember;
+	private JPanel tabPerson;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) {//, People[] user
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
@@ -75,9 +102,12 @@ public class CalendarMenu extends JFrame {
 	}
 	
 	public CalendarMenu() {
+		ctrG = new CtrGroup();
 		language = new Languages();
 		time = new Time();
-		//control = new CalendarControl();
+		ctrPeople = new CtrPeople();
+		//user = ctrPeople.getPerson("aaa@a.aa");
+		user = ctrPeople.getPerson("bbb@b.bb");
 		
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 976, 728);//999, 748
@@ -100,8 +130,90 @@ public class CalendarMenu extends JFrame {
 		contentPane.add(changePanelMiddle, BorderLayout.CENTER);
 		
 		topPanel();
-		//tableCalendar(time.getActualDate(1), time.getActualDate(2), time.getActualDate(3));
-		VolunteerMenu();
+		accountsMenu(user);
+	}
+	
+	public void checkConnection(Color c)
+	{
+		Component[] aaa = topPanel.getComponents();
+		for(Object a:aaa)
+		{
+			if(a instanceof JLabel)
+			{
+				if(((JLabel) a).getName() != null)
+				{
+					if(((JLabel) a).getName().equals("connection"))
+					{
+						((JLabel) a).setBackground(c);
+					}
+				}
+			}
+		}
+	}
+	
+	private void topPanel() {
+		JButton settingsButton = new JButton("");
+		settingsButton.setBounds(945, 0, 25, 25);
+		Image img = new ImageIcon(this.getClass().getResource("/settingicon.jpg")).getImage();
+		settingsButton.setPreferredSize(new Dimension(25, 25));
+		settingsButton.setIcon(new ImageIcon(img));
+		settingsButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			}
+		});
+		topPanel.add(settingsButton);
+		
+		int x = 0;
+		for(int i = 0; i < 3; i++) {
+			int choose = i;
+			JLabel lblNewLabel = new JLabel(""+language.labelsTopPanel(i));
+			lblNewLabel.setHorizontalTextPosition(SwingConstants.CENTER);
+			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+			lblNewLabel.setOpaque(true);
+			lblNewLabel.setFont(new Font("Arial", Font.BOLD, 13));
+			if(i == 0)
+				lblNewLabel.setForeground(new Color(0, 0, 128));
+			lblNewLabel.setBackground(SystemColor.inactiveCaption);
+			lblNewLabel.addMouseListener(new MouseAdapter() {
+				@Override
+				public void mouseEntered(MouseEvent arg0) {
+					lblNewLabel.setBackground(new Color(222, 184, 135));
+				}
+				@Override
+				public void mouseExited(MouseEvent arg0) {
+					lblNewLabel.setBackground(SystemColor.inactiveCaption);
+				}
+				@Override
+				public void mousePressed(MouseEvent arg0) {
+					switch(choose) {
+						case 0:
+							tableCalendar(time.getActualDate(1), time.getActualDate(2), time.getActualDate(3));
+						break;
+						case 1:
+							;
+						break;
+						case 2:
+							accountsMenu(user);
+						break;
+					}
+				}
+			});
+			lblNewLabel.setBounds(x, 0, lblNewLabel.getPreferredSize().width + 15, 25);
+			x = x + lblNewLabel.getWidth();
+			topPanel.add(lblNewLabel);
+		}
+		
+		JLabel connection = new JLabel("");
+		connection.setBorder(new LineBorder(new Color(0, 0, 0)));
+		connection.setBackground(topPanel.getBackground());
+		connection.setOpaque(true);
+		connection.setBounds(925, 5, 15, 15);
+		connection.setName("connection");
+		topPanel.add(connection);
+//		(new Thread(new CheckConnection(this))).start();ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd
+//		Thread thread = new Thread(new CheckConnection(this));
+//		thread.start();
+//		thread.interrupt();
 	}
 	
 	private void refresh(JPanel p){
@@ -166,8 +278,6 @@ public class CalendarMenu extends JFrame {
 			people_1.setBounds(99, 33, 31, 15);
 			changePanel_1.add(people_1);
 			
-			changePanel_1.revalidate();
-			changePanel_1.repaint();
 			if(column == time.getStartDay(month,year)-1 && setStartDate == false){
 				date_1.setText(""+dayy);
 				setStartDate = true;
@@ -205,15 +315,15 @@ public class CalendarMenu extends JFrame {
 			changePanel_1.add(date_1);
 			
 			if(column == 0){
-			JLabel week_1 = new JLabel();
-			week_1.setText(""+week);
-			week_1.setOpaque(true);
-			week_1.setFont(new Font("Arial", Font.PLAIN, 16));
-			week_1.setHorizontalAlignment(SwingConstants.RIGHT);
-			week_1.setBackground(new Color(248, 248, 255));
-			week_1.setBounds(112, 1, 18, 19);
-			changePanel_1.add(week_1);
-			week++;
+				JLabel week_1 = new JLabel();
+				week_1.setText(""+week);
+				week_1.setOpaque(true);
+				week_1.setFont(new Font("Arial", Font.PLAIN, 16));
+				week_1.setHorizontalAlignment(SwingConstants.RIGHT);
+				week_1.setBackground(new Color(248, 248, 255));
+				week_1.setBounds(112, 1, 18, 19);
+				changePanel_1.add(week_1);
+				week++;
 			}
 			if(setStartDate == true)
 				dayy++;
@@ -242,14 +352,14 @@ public class CalendarMenu extends JFrame {
 		}
 		x = 12;
 		for(int column = 0; column < 7; column++){
-			JLabel label_1 = new JLabel(language.weekDays(column));
-			label_1.setBounds(x, 13, 135, 16);
-			label_1.setHorizontalTextPosition(SwingConstants.CENTER);
-			label_1.setHorizontalAlignment(SwingConstants.CENTER);
-			label_1.setOpaque(true);
-			label_1.setFont(new Font("Arial", Font.PLAIN, 16));
-			label_1.setBackground(new Color(230, 230, 250));
-			changePanelMiddle.add(label_1);
+			JLabel dayWeek = new JLabel(language.weekDays(column));
+			dayWeek.setBounds(x, 13, 135, 16);
+			dayWeek.setHorizontalTextPosition(SwingConstants.CENTER);
+			dayWeek.setHorizontalAlignment(SwingConstants.CENTER);
+			dayWeek.setOpaque(true);
+			dayWeek.setFont(new Font("Arial", Font.PLAIN, 16));
+			dayWeek.setBackground(new Color(230, 230, 250));
+			changePanelMiddle.add(dayWeek);
 			x = x + 135;
 		}
 		
@@ -260,7 +370,7 @@ public class CalendarMenu extends JFrame {
 		changePanelMiddle.add(changePanel);
 		
 		JLabel label_1 = new JLabel();
-		label_1.setBounds(379, 2, 180, 25);//label_1.setHorizontalTextPosition(SwingConstants.CENTER);
+		label_1.setBounds(379, 2, 180, 25);
 		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_1.setOpaque(true);
 		label_1.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -331,274 +441,571 @@ public class CalendarMenu extends JFrame {
 		changePanelMiddle.add(separator2);
 	}
 	
-	private void topPanel()
+	private void accountsMenu(People[] p)
 	{
-		JButton settingsButton = new JButton("");
-		settingsButton.setBounds(945, 0, 25, 25);
-		Image img = new ImageIcon(this.getClass().getResource("/settingicon.jpg")).getImage();
-		settingsButton.setPreferredSize(new Dimension(25, 25));
-		settingsButton.setIcon(new ImageIcon(img));
-		settingsButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
+		refresh(changePanelMiddle);
+		GroupMenu();
+		peopleMenu(p);
+	}
+	
+	private void peopleMenu(People[] p)
+	{
+		CopyPerson copyPerson = new CopyPerson();
+		People[] pCopy = new People[p.length];
+		for(int i = 0; i < p.length; i++) {
+			if(p[i] != null) {
+				if(p[i] instanceof Volunteer) {
+					pCopy[i] = (Volunteer) copyPerson.getCopy(p[i]);
+				}
+				else if(p[i] instanceof Member) {
+					pCopy[i] = (Member) copyPerson.getCopy(p[i]);
+				}
+				else if(p[i] instanceof Person) {
+					pCopy[i] = (Person) copyPerson.getCopy(p[i]);
+				}
+			}
+		}
+		
+		Image xIcon = new ImageIcon(this.getClass().getResource("/xicon.png")).getImage();
+		Image vIcon = new ImageIcon(this.getClass().getResource("/vicon.png")).getImage();
+		Image deleteicon = new ImageIcon(this.getClass().getResource("/deleteicon.png")).getImage();
+		Image clearicon = new ImageIcon(this.getClass().getResource("/clearicon.png")).getImage();
+		Image searchicon = new ImageIcon(this.getClass().getResource("/searchicon.png")).getImage();
+		
+		peoplePanel = new JPanel();
+		peoplePanel.setBounds(12, 13, 200, 642);
+		changePanelMiddle.add(peoplePanel);
+		peoplePanel.setLayout(new BorderLayout(0, 0));
+		
+		JTabbedPane tabbedPanePeople = new JTabbedPane(JTabbedPane.TOP);//System.out.println(""+tabbedPanePeople.getSelectedComponent());
+		tabbedPanePeople.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				System.out.println(""+tabbedPanePeople.getSelectedComponent().getName());
 			}
 		});
-		topPanel.add(settingsButton);
+		peoplePanel.add(tabbedPanePeople, BorderLayout.CENTER);
 		
-		int x = 0;
-		for(int i = 0; i < 3; i++)
+		tabVolunteer = new JPanel();//-----------------------------------------------------------------------------Volunteer
+		tabbedPanePeople.addTab("Volunteer", null, tabVolunteer, null);
+		tabVolunteer.setName("Volunteer");
+		tabVolunteer.setLayout(null);
+		
+		JLabel nameL = new JLabel("Name:");
+		nameL.setBounds(10, 0, 173, 16);
+		tabVolunteer.add(nameL);
+		
+		JTextField nameT = new JTextField();
+		nameT.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				pCopy[0].setName(nameT.getText());
+			}
+		});
+		nameT.setColumns(10);
+		nameT.setBounds(10, 17, 173, 24);
+		tabVolunteer.add(nameT);
+		
+		JLabel surnameL = new JLabel("Surname:");
+		surnameL.setBounds(10, 54, 173, 16);
+		tabVolunteer.add(surnameL);
+		
+		JTextField surnameT = new JTextField();
+		surnameT.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				pCopy[0].setSurname(surnameT.getText());
+			}
+		});
+		surnameT.setColumns(10);
+		surnameT.setBounds(10, 71, 173, 24);
+		tabVolunteer.add(surnameT);
+		
+		JLabel emailL = new JLabel("Email:");
+		emailL.setBounds(10, 108, 173, 16);
+		tabVolunteer.add(emailL);
+		
+		JTextField emailT = new JTextField();
+		emailT.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				pCopy[0].setEmail(emailT.getText());
+			}
+		});
+		emailT.setColumns(10);
+		emailT.setBounds(10, 125, 173, 24);
+		tabVolunteer.add(emailT);
+		
+		JLabel info1 = new JLabel("nie znaleziono");
+		info1.setHorizontalAlignment(SwingConstants.RIGHT);
+		info1.setBounds(10, 162, 84, 25);
+		tabVolunteer.add(info1);
+		
+		JButton deleteB = new JButton("");
+		deleteB.setIcon(new ImageIcon(deleteicon));
+		deleteB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+					ctrPeople.deletePerson(p[0]);
+					peopleMenu(user);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		deleteB.setBounds(106, 162, 25, 25);
+		tabVolunteer.add(deleteB);
+		
+		JButton clearB = new JButton("");
+		clearB.setIcon(new ImageIcon(clearicon));
+		clearB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				People[] clear = {new Volunteer ("", "", "", "", "0", false, "", 0, true, false)};
+				accountsMenu(clear);
+			}
+		});
+		clearB.setBounds(132, 162, 25, 25);
+		tabVolunteer.add(clearB);
+		
+		JButton searchB = new JButton("");
+		searchB.setIcon(new ImageIcon(searchicon));
+		searchB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				People[] pp = ctrPeople.getPerson(emailT.getText());
+				boolean found = false;
+				for(int i = 0; i < pp.length; i++) {
+					if(pp[i] != null) {
+						found = true;
+						p[i] = pp[i];
+					}
+				}
+				if(found == true)
+					accountsMenu(p);
+				else
+					info1.setText("Not found");
+			}
+		});
+		searchB.setBounds(158, 162, 25, 25);
+		tabVolunteer.add(searchB);
+		
+		JPanel tab2 = new JPanel();
+		tab2.setLayout(null);
+		tab2.setBounds(10, 200, 173, 399);
+		tabVolunteer.add(tab2);
+		
+		JLabel phoneL = new JLabel("Phone:");
+		phoneL.setBounds(0, 0, 173, 16);
+		tab2.add(phoneL);
+		
+		JTextField phoneT = new JTextField();
+		phoneT.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				pCopy[0].setTelephoneNo(phoneT.getText());
+			}
+		});
+		phoneT.setColumns(10);
+		phoneT.setBounds(0, 17, 173, 24);
+		tab2.add(phoneT);
+		
+		JLabel passwordResetS = new JLabel();
+		passwordResetS.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent arg0) {
+				if(!((Volunteer) pCopy[0]).getPassword().equals("0")) {
+					passwordResetS.setIcon(new ImageIcon(vIcon));
+					((Volunteer) pCopy[0]).setPassword("0");
+				}
+			}
+		});
+		passwordResetS.setOpaque(true);
+		passwordResetS.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.GRAY));
+		passwordResetS.setBounds(0, 108, 20, 20);
+		tab2.add(passwordResetS);
+		
+		JLabel passwordResetL = new JLabel("Password reset");
+		passwordResetL.setHorizontalAlignment(SwingConstants.LEFT);
+		passwordResetL.setBounds(27, 108, 146, 20);
+		tab2.add(passwordResetL);
+		
+		JLabel avabilityS = new JLabel();
+		avabilityS.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(((Volunteer) pCopy[0]).isAvailable() == true) {
+					avabilityS.setIcon(new ImageIcon(xIcon));
+					((Volunteer) pCopy[0]).setAvailable(false);
+				}
+				else {
+					avabilityS.setIcon(new ImageIcon(vIcon));
+					((Volunteer) pCopy[0]).setAvailable(true);
+				}
+			}
+		});
+		avabilityS.setOpaque(true);
+		avabilityS.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.GRAY));
+		avabilityS.setBounds(0, 141, 20, 20);
+		tab2.add(avabilityS);
+		
+		JLabel avabilityL = new JLabel("Availability");
+		avabilityL.setHorizontalAlignment(SwingConstants.LEFT);
+		avabilityL.setBounds(27, 141, 146, 20);
+		tab2.add(avabilityL);
+		
+		JLabel bartokensL = new JLabel("Bartokens:");
+		bartokensL.setBounds(0, 54, 173, 16);
+		tab2.add(bartokensL);
+		
+		JTextField bartokensT = new JTextField();
+		bartokensT.addFocusListener(new FocusAdapter() {
+			@Override
+			public void focusLost(FocusEvent e) {
+				((Volunteer) pCopy[0]).setBartokens(Integer.parseInt(bartokensT.getText()));
+			}
+		});
+		bartokensT.setColumns(10);
+		bartokensT.setBounds(0, 71, 173, 24);
+		tab2.add(bartokensT);
+		
+		JLabel paidS = new JLabel();
+		paidS.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(((Volunteer) pCopy[0]).isPaid() == true) {
+					paidS.setIcon(new ImageIcon(xIcon));
+					((Volunteer) pCopy[0]).setPaid(false);
+				}
+				else {
+					paidS.setIcon(new ImageIcon(vIcon));
+					((Volunteer) pCopy[0]).setPaid(true);
+				}
+			}
+		});
+		paidS.setOpaque(true);
+		paidS.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.GRAY));
+		paidS.setBounds(0, 207, 20, 20);
+		tab2.add(paidS);
+		
+		JLabel paidL = new JLabel("Employee");
+		paidL.setHorizontalAlignment(SwingConstants.LEFT);
+		paidL.setBounds(27, 207, 146, 20);
+		tab2.add(paidL);
+		
+		JComboBox groupC = new JComboBox(new Object[]{});
+		//groupC.setName("comboVolunteer");
+		ArrayList<String> list = ctrG.getGroupsToPerson(pCopy[0].getEmail());
+		for(int i = 0; i < list.size(); i++) {
+			groupC.addItem(list.get(i));
+		}
+		groupC.setBounds(0, 257, 173, 24);
+		tab2.add(groupC);
+		
+		JLabel groupL = new JLabel("Group:");
+		groupL.setBounds(0, 240, 173, 16);
+		tab2.add(groupL);
+		
+		JButton addG = new JButton("");
+		addG.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		addG.setBounds(148, 285, 25, 25);
+		tab2.add(addG);
+		
+		JButton deleteG = new JButton("");
+		deleteG.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		deleteG.setBounds(122, 285, 25, 25);
+		tab2.add(deleteG);
+		
+		JLabel info2 = new JLabel("nie znaleziono");
+		info2.setHorizontalAlignment(SwingConstants.RIGHT);
+		info2.setBounds(0, 285, 110, 25);
+		tab2.add(info2);
+		
+		JButton setB = new JButton("Set");
+		setB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(p.length != 1) {
+					try {
+						ctrPeople.updatePerson(p[0], pCopy[0]);
+						user = pCopy;
+						accountsMenu(user);
+					} catch (Exception e) {
+						System.out.println("peopleMenu - Query exception: "+e);
+					}
+				}
+				else {
+					String[] dataV = new String[] {phoneT.getText(), nameT.getText(), surnameT.getText(), emailT.getText()};
+					int i = 0;
+					boolean empty = false;
+//					while(i < dataV.length || empty != true) {
+//						if(dataV[i].equals("")) {
+//							empty = true;
+//						}
+//						i++;
+//					}
+					if(empty == false) {
+						try {
+							ctrPeople.createVolunteer(dataV[0], dataV[1], dataV[2], "english", p[0].getPassword(), pCopy[0].getPrivilege(), dataV[3],
+									(Integer.parseInt(bartokensT.getText())), ((Volunteer) pCopy[0]).isAvailable(), ((Volunteer) pCopy[0]).isPaid());
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+		setB.setBounds(10, 323, 151, 25);
+		tab2.add(setB);
+		
+		JButton cancelB = new JButton("Cancel");
+		cancelB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				accountsMenu(p);
+			}
+		});
+		cancelB.setBounds(10, 361, 151, 25);
+		tab2.add(cancelB);
+		
+		JLabel administatorS = new JLabel();
+		administatorS.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if(((Volunteer) pCopy[0]).getPrivilege() == true) {
+					administatorS.setIcon(new ImageIcon(xIcon));
+					pCopy[0].setPrivilege(false);
+				}
+				else {
+					administatorS.setIcon(new ImageIcon(vIcon));
+					pCopy[0].setPrivilege(true);
+				}
+			}
+		});
+		administatorS.setOpaque(true);
+		administatorS.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.GRAY));
+		administatorS.setBounds(0, 174, 20, 20);
+		tab2.add(administatorS);
+		
+		JLabel administratorL = new JLabel("Administrator");
+		administratorL.setHorizontalAlignment(SwingConstants.LEFT);
+		administratorL.setBounds(27, 174, 146, 20);
+		tab2.add(administratorL);
+		
+		displayInfo(((Volunteer) pCopy[0]).getExperienceList());
+		nameT.setText(((Volunteer) pCopy[0]).getName());
+		surnameT.setText(((Volunteer) pCopy[0]).getSurname());
+		emailT.setText(((Volunteer) pCopy[0]).getEmail());
+		phoneT.setText(((Volunteer) pCopy[0]).getTelephoneNo());
+		bartokensT.setText(""+((Volunteer) pCopy[0]).getBartokens());
+		if(((Volunteer) pCopy[0]).getPassword().equals("0"))
+			passwordResetS.setIcon(new ImageIcon(vIcon));
+		else
+			passwordResetS.setIcon(new ImageIcon(xIcon));
+		if(((Volunteer) pCopy[0]).isAvailable() == true)
+			avabilityS.setIcon(new ImageIcon(vIcon));
+		else
+			avabilityS.setIcon(new ImageIcon(xIcon));
+		if(((Volunteer) pCopy[0]).getPrivilege() == true)
+			administatorS.setIcon(new ImageIcon(vIcon));
+		else
+			administatorS.setIcon(new ImageIcon(xIcon));
+		if(((Volunteer) pCopy[0]).isPaid() == true)
+			paidS.setIcon(new ImageIcon(vIcon));
+		else
+			paidS.setIcon(new ImageIcon(xIcon));
+		((Volunteer) pCopy[0]).getExperienceList();
+		
+		tabMember = new JPanel();//-----------------------------------------------------------------------------Member
+		tabbedPanePeople.addTab("Member", null, tabMember, null);
+		tabMember.setName("Member");
+		tabMember.setLayout(null);
+		
+		tabPerson = new JPanel();//-----------------------------------------------------------------------------Person
+		tabbedPanePeople.addTab("Person", null, tabPerson, null);
+		tabPerson.setName("Person");
+		tabPerson.setLayout(null);
+	}
+	
+	private void peopleTabs(String tabName) {hjbjlk
+		
+	}
+	
+	private void GroupMenu()
+	{
+		ArrayList<Group> listG = ctrG.getAllGroups();
+		groupPanel1 = new JPanel();
+		groupPanel1.setBounds(758, 13, 212, 642);
+		groupPanel1.setLayout(new BorderLayout(0, 0));
+		changePanelMiddle.add(groupPanel1);
+		
+		JPanel groupPanel2 = new JPanel();
+		JScrollPane groupScroll = new JScrollPane(groupPanel2);
+		groupScroll.setBorder(null);
+		groupPanel2.setLayout(null);
+		groupPanel1.add(groupScroll, BorderLayout.CENTER);
+		
+		int y = 0;
+		for(int i = 0; i < listG.size(); i++)
 		{
-			int choose = i;
-			JLabel lblNewLabel = new JLabel(""+language.labelsTopPanel(i));
-			lblNewLabel.setHorizontalTextPosition(SwingConstants.CENTER);
-			lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-			lblNewLabel.setOpaque(true);
-			lblNewLabel.setFont(new Font("Arial", Font.BOLD, 13));
-			if(i == 0)
-				lblNewLabel.setForeground(new Color(0, 0, 128));
-			lblNewLabel.setBackground(SystemColor.inactiveCaption);
-			lblNewLabel.addMouseListener(new MouseAdapter() {
+			String nameG = listG.get(i).getName();
+			JLabel group = new JLabel(nameG);
+			group.setHorizontalTextPosition(SwingConstants.CENTER);
+			group.setHorizontalAlignment(SwingConstants.CENTER);
+			group.setOpaque(true);
+			group.setFont(new Font("Arial", Font.BOLD, 13));
+			group.setBackground(new Color(230, 230, 250));
+			group.addMouseListener(new MouseAdapter() {
 				@Override
 				public void mouseEntered(MouseEvent arg0) {
-					lblNewLabel.setBackground(new Color(222, 184, 135));
+					group.setBackground(new Color(216, 191, 216));
 				}
 				@Override
 				public void mouseExited(MouseEvent arg0) {
-					lblNewLabel.setBackground(SystemColor.inactiveCaption);
+					group.setBackground(new Color(230, 230, 250));
 				}
 				@Override
 				public void mousePressed(MouseEvent arg0) {
-					switch(choose)
-					{
-						case 0:
-							tableCalendar(time.getActualDate(1), time.getActualDate(2), time.getActualDate(3));
-						break;
-						case 1:
-							;
-						break;
-						case 2:
-							VolunteerMenu();
-						break;
+					
+				}
+				@Override
+				public void mouseClicked(MouseEvent e) {
+					for(Object a:tabVolunteer.getComponents()) {
+						if(a instanceof JPanel) {
+							for(Object a2:((JPanel) a).getComponents()) {
+								if(a2 instanceof JComboBox) {
+									((JComboBox) a2).addItem(nameG);
+									((JComboBox) a2).setSelectedItem(nameG);
+								}
+							}
+						}
 					}
 				}
 			});
-			lblNewLabel.setBounds(x, 0, lblNewLabel.getPreferredSize().width + 15, 25);
-			x = x + lblNewLabel.getWidth();
-			topPanel.add(lblNewLabel);
+			group.setBounds(0, y, 195, 30);
+			y = y + group.getHeight();
+			groupPanel2.add(group);
 		}
+		
+		JButton newGroupB = new JButton("Add new group");
+		newGroupB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				addNewGroup();
+			}
+		});
+		newGroupB.setBounds(0, y, 195, 25);
+		groupPanel2.add(newGroupB);
+		
+		groupPanel2.setPreferredSize(new Dimension(groupScroll.getX(), y + newGroupB.getHeight()));
+		groupPanel1.add(groupScroll, BorderLayout.CENTER);
 	}
 	
-	private void VolunteerMenu()
+	private void addNewGroup()
 	{
-		refresh(changePanelMiddle);
+		refresh(groupPanel1);
 		
-		JLabel name = new JLabel(""+language.labelsVolunter(0)+":");
-		name.setBounds(12, 13, 200, 16);
-		changePanelMiddle.add(name);
+		groupPanel1.setLayout(null);
+		JTextField nameGroupT = new JTextField();
+		nameGroupT.setBounds(0, 17, 188, 24);
+		groupPanel1.add(nameGroupT);
+		nameGroupT.setColumns(10);
 		
-		JTextField nameT = new JTextField();
-		nameT.setBounds(12, 30, 200, 24);
-		changePanelMiddle.add(nameT);
-		nameT.setColumns(10);
+		JLabel nameGroup = new JLabel("Name of group:");
+		nameGroup.setBounds(0, 0, 188, 16);
+		groupPanel1.add(nameGroup);
 		
-		JLabel surname = new JLabel(""+language.labelsVolunter(1)+":");
-		surname.setBounds(12, 67, 200, 16);
-		changePanelMiddle.add(surname);
+		JLabel type = new JLabel("Access for:");
+		type.setBounds(0, 54, 188, 16);
+		groupPanel1.add(type);
 		
-		JTextField surnameT = new JTextField();
-		surnameT.setColumns(10);
-		surnameT.setBounds(12, 84, 200, 24);
-		changePanelMiddle.add(surnameT);
+		String[] petStrings5 = {"Volunteer", "Member", "Everyone"};
+		JComboBox typeT = new JComboBox(petStrings5);
+		typeT.setBounds(0, 71, 188, 24);
+		groupPanel1.add(typeT);
 		
-		JLabel email = new JLabel(""+language.labelsVolunter(2)+":");//37
-		email.setBounds(12, 121, 200, 16);
-		changePanelMiddle.add(email);
-		
-		JTextField emailT = new JTextField();//17//52
-		emailT.setColumns(10);
-		emailT.setBounds(12, 138, 200, 24);
-		changePanelMiddle.add(emailT);
-		
-		JButton btn = new JButton("");
-		btn.addActionListener(new ActionListener() {
+		JButton setB = new JButton(""+language.buttoms(4));
+		setB.setBounds(96, 108, 92, 25);
+		setB.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				accountsMenu(user);
 			}
 		});
-		btn.setBounds(187, 175, 25, 25);
-		changePanelMiddle.add(btn);
+		groupPanel1.add(setB);
 		
-		JButton button = new JButton("");
-		button.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
+		JButton cancelB = new JButton(""+language.buttoms(3));
+		cancelB.setBounds(0, 108, 92, 25);
+		cancelB.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				accountsMenu(user);
 			}
 		});
-		button.setBounds(150, 175, 25, 25);
-		changePanelMiddle.add(button);
+		groupPanel1.add(cancelB);
 		
-		JButton button_1 = new JButton("");
-		button_1.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-			}
-		});
-		button_1.setBounds(113, 175, 25, 25);
-		changePanelMiddle.add(button_1);
 		
-		JLabel info = new JLabel("New label");
-		info.setHorizontalAlignment(SwingConstants.CENTER);
-		info.setBounds(12, 213, 200, 16);
-		changePanelMiddle.add(info);
 		
+		
+//		JButton setB = new JButton(""+language.buttoms(4));
+//		setB.setBounds(103, 0, 97, 25);
+//		setB.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//			}
+//		});
+//		personPanel3.add(setB);
+//		
+//		JButton cancelB = new JButton(""+language.buttoms(3));
+//		cancelB.setBounds(0, 0, 97, 25);
+//		cancelB.addActionListener(new ActionListener() {
+//			public void actionPerformed(ActionEvent arg0) {
+//			}
+//		});
+//		personPanel3.add(cancelB);
+	}
+	
+	private void displayInfo(Object object)
+	{
+		String[] columsName = null;
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0)));
-		scrollPane.setBounds(224, 13, 487, 377);
+		scrollPane.setBounds(224, 13, 522, 642);
 		changePanelMiddle.add(scrollPane);
 		
-		JTextArea infoT = new JTextArea();
-		scrollPane.setViewportView(infoT);
-		infoT.setEditable(false);
-		infoT.setLineWrap(true);
+//		JTextArea infoT = new JTextArea();
+//		scrollPane.setViewportView(infoT);
+//		infoT.setEditable(false);
+//		infoT.setLineWrap(true);
 		
-		changePanel_2 = new JPanel();
-		changePanel_2.setBorder(new MatteBorder(1, 0, 0, 0, (Color) new Color(0, 0, 0)));
-		changePanel_2.setBounds(12, 242, 200, 343);
-		changePanelMiddle.add(changePanel_2);
-		changePanel_2.setLayout(null);
-		
-		JLabel phone = new JLabel(""+language.labelsVolunter(3)+":");
-		phone.setBounds(0, 13, 200, 16);
-		changePanel_2.add(phone);
-		
-		phononeT = new JTextField();
-		phononeT.setBounds(0, 30, 200, 24);
-		changePanel_2.add(phononeT);
-		phononeT.setColumns(10);
-		
-		changePanel_3 = new JPanel();
-		changePanel_3.setBounds(0, 154, 200, 173);
-		changePanel_2.add(changePanel_3);
-		changePanel_3.setLayout(null);
-		
-		JLabel payments = new JLabel("Payments:");
-		payments.setBounds(0, 0, 200, 16);
-		changePanel_3.add(payments);
-		
-		JLabel label = new JLabel();
-		label.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				if(label.getBackground() == Color.ORANGE)
-					label.setBackground(new Color(240, 240, 240));
-				else
-					label.setBackground(Color.ORANGE);
+		JTable table = new JTable();
+		scrollPane.setViewportView(table);
+		DefaultTableModel tableModel = new DefaultTableModel() {
+			   @Override
+			   public boolean isCellEditable(int row, int column) {//return column == 1;only 1 column is editable //return false;
+				   return column == 1;
+			   }
+		};
+		table.setModel(tableModel);
+		table.setFont(new Font("Arial", Font.PLAIN, 14));
+		table.setRowHeight(table.getFont().getSize());
+		DefaultTableCellRenderer render = (DefaultTableCellRenderer) table.getDefaultRenderer(String.class);
+		render.setHorizontalAlignment(SwingConstants.CENTER);
+		table.setRowHeight(table.getFont().getSize() + 5);
+		if(((ArrayList<Experience>) object) != null) {
+			columsName = new String[] {"Job", "Experience"};
+			for (int i = 0; i < columsName.length; i++) {
+				tableModel.addColumn(columsName[i]);
 			}
-		});
-		label.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.GRAY));
-		label.setOpaque(true);
-		label.setBounds(152, 71, 24, 24);
-		changePanel_3.add(label);
-		
-		String[] petStrings4 = {"24.04.2015 (nie zap³acone)", "25.04.2015 (paid)"};
-		JComboBox paymentsT = new JComboBox(petStrings4);
-		paymentsT.setBounds(0, 17, 200, 24);
-		changePanel_3.add(paymentsT);
-		
-		JLabel privilages = new JLabel(""+language.labelsVolunter(4)+":");
-		privilages.setBounds(0, 100, 200, 16);
-		changePanel_2.add(privilages);
-		
-		String[] petStrings3 = {"Volunteer", "Member", "Administrator"};
-		JComboBox privilagesT = new JComboBox(petStrings3);
-		privilagesT.setBounds(0, 117, 200, 24);
-		changePanel_2.add(privilagesT);
-		privilagesT.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent event) {
-            	contentChangePanel_3(privilagesT.getSelectedItem().toString());
-            }
-        });
-		//contentChangePanel_3(privilagesT.getSelectedItem().toString());
-		
-		JLabel reset = new JLabel(""+language.infoLabels(4));
-		reset.setBounds(27, 67, 173, 20);
-		changePanel_2.add(reset);
-		reset.setHorizontalAlignment(SwingConstants.LEFT);
-		
-		JLabel resetB = new JLabel();
-		resetB.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				if(resetB.getBackground() == Color.ORANGE)
-					resetB.setBackground(new Color(240, 240, 240));
-				else
-					resetB.setBackground(Color.ORANGE);
+			for (int i = 0; i < ((ArrayList<Experience>) object).size(); i++) {
+				tableModel.addRow(new Object[] {""+((ArrayList<Experience>) object).get(i).getJob(),
+						""+((ArrayList<Experience>) object).get(i).getShifts()});
 			}
-		});
-		resetB.setBorder(new MatteBorder(1, 1, 1, 1, (Color) Color.GRAY));
-		resetB.setOpaque(true);
-		resetB.setBounds(0, 67, 20, 20);
-		changePanel_2.add(resetB);
-	}
-	
-	private void contentChangePanel_3(String choose)
-	{
-		switch(choose)
-		{
-			case "Volunteer":
-				refresh(changePanel_3);
-				
-				JLabel tokens = new JLabel(""+language.labelsVolunter(7)+":");
-				tokens.setBounds(0, 90, 200, 16);
-				changePanel_3.add(tokens);
-				
-				tokensT = new JTextField();
-				tokensT.setBounds(0, 107, 200, 22);
-				changePanel_3.add(tokensT);
-				tokensT.setColumns(10);
-				
-				JButton btnNewButton = new JButton(""+language.buttoms(4));
-				btnNewButton.setBounds(0, 142, 97, 25);
-				changePanel_3.add(btnNewButton);
-				
-				JButton btnNewButton_1 = new JButton(""+language.buttoms(3));
-				btnNewButton_1.setBounds(103, 142, 97, 25);
-				changePanel_3.add(btnNewButton_1);
-				
-				JLabel qualifications = new JLabel(""+language.labelsVolunter(6)+":");
-				qualifications.setBounds(0, 0, 200, 16);
-				changePanel_3.add(qualifications);
-				
-				String[] petStrings2 = {"Choose qualifications:", "aaa"};
-				JComboBox qualificationsT = new JComboBox(petStrings2);
-				qualificationsT.setBounds(0, 17, 200, 22);
-				changePanel_3.add(qualificationsT);
-				qualificationsT.setSelectedItem("text has changed");
-			
-				JButton addB = new JButton("");
-				addB.setBounds(175, 52, 25, 25);
-				changePanel_3.add(addB);
-				addB.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-					}
-				});
-				
-				JButton removeB = new JButton("");
-				removeB.setBounds(138, 52, 25, 25);
-				changePanel_3.add(removeB);
-			
-				JLabel lblNewLabel_1 = new JLabel(""+language.infoLabels(2));
-				lblNewLabel_1.setBounds(0, 52, 126, 25);
-				changePanel_3.add(lblNewLabel_1);
-				lblNewLabel_1.setHorizontalAlignment(SwingConstants.RIGHT);
-			break;
-			case "Member":
-				refresh(changePanel_3);
-			break;
-				
-			case "Administrator":
-				refresh(changePanel_3);
-			break;
-			
-			case "":
-				refresh(changePanel_3);
-			break;
+		}
+		for (int i = 0; i < columsName.length; i++) {
+			table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+				public void valueChanged(ListSelectionEvent event) {
+					//table.setValueAt("aaa", table.getSelectedRow(), table.getSelectedColumn());
+					//System.out.println(table.getValueAt(table.getSelectedRow(), table.getSelectedColumn()).toString());
+				}
+			});
 		}
 	}
 }
