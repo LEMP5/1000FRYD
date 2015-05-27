@@ -5,13 +5,14 @@ import java.util.ArrayList;
 public class EventType {
 	private String name;
 	private ArrayList<Job> jobList;
-	private int dateLastUsed;
 	
-	public EventType(String name, int dateLastUsed) {
+	public EventType(String name) {
 		super();
 		this.name = name;
 		this.jobList = new ArrayList<Job>();
-		this.dateLastUsed = dateLastUsed;
+	}
+	
+	public EventType() {
 	}
 	
 	public String getName() {
@@ -31,11 +32,5 @@ public class EventType {
 	}
 	public void removeShift(Job job){
 		jobList.remove(job);
-	}
-	public int getDateLastUsed() {
-		return dateLastUsed;
-	}
-	public void setDateLastUsed(int dateLastUsed) {
-		this.dateLastUsed = dateLastUsed;
 	}
 }

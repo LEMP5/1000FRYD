@@ -7,18 +7,17 @@ import ModelLayer.Day;
 import DBLayer.DbDay;
 
 public class CtrDay {
-	DbDay dbDay;
-	private ArrayList<Day> week;
+	private static DbDay dbDay;
 	private String[] daysOfWeek;
 
 	public CtrDay() {
 		super();
 		dbDay = new DbDay();
-		week = new ArrayList<Day>();
 		daysOfWeek = new String[]{"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
 	}
 	
-	public void createDays(int weeksAhead){
+	public ArrayList<Day> getWeek(int weeksAhead){
+		ArrayList<Day> week= new ArrayList<Day>();;
 		Calendar calendar = Calendar.getInstance();
         int t = calendar.get(Calendar.DAY_OF_WEEK)-1;
         calendar.add(Calendar.DAY_OF_MONTH, -(t) + 7 * (weeksAhead));
@@ -30,20 +29,6 @@ public class CtrDay {
         	dbDay.getDay(date, daysOfWeek[i]);
         	calendar.add(Calendar.DAY_OF_MONTH, 1);
         }
-	}
-
-	private int getDayOfTheWeek(){
-        Calendar calendar = Calendar.getInstance();
-        int t = calendar.get(Calendar.DAY_OF_WEEK);
-        if(t==1)
-        return 7;
-        else
-        return calendar.get(Calendar.DAY_OF_WEEK)-1;
-    }
-	
-	private int getFirstDayOfWeek(){
-		Calendar calendar = Calendar.getInstance();
-        int t = calendar.get(Calendar.DAY_OF_WEEK);
-		return t;
+        return week;
 	}
 }

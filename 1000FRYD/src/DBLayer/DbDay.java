@@ -21,7 +21,7 @@ public class DbDay {
 				insertDay(date, dayOfWeek);
 				return findDay(date, false);
 			} catch (Exception e) {
-				System.out.println("Error while ");
+				System.out.println("Error while creating Day.");
 			}
     	return dayObj;
     	

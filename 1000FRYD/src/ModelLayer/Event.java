@@ -8,7 +8,7 @@ public class Event {
 	private String description;
 	private int startHour;
 	private int endHour;
-	private String type;
+	private EventType type;
 	private ArrayList<People> guestList;
 	
 	public Event(int id, String name, String description, int startHour,
@@ -22,11 +22,14 @@ public class Event {
 		guestList = new ArrayList<People>();
 	}
 	
+	public Event() {
+	}
 	
-	public String getType() {
+	
+	public EventType getType() {
 		return type;
 	}
-	public void setType(String type) {
+	public void setType(EventType type) {
 		this.type = type;
 	}
 	public void setId(int id) {
