@@ -3,6 +3,9 @@ package ModelLayer;
 import java.util.ArrayList;
 
 public class Day {
+	private int day;
+	private int month;
+	private int year;
 	private String date;
 	private String dayOfWeek;
 	private ArrayList<Shift> shiftList;
@@ -14,6 +17,9 @@ public class Day {
 		this.dayOfWeek = dayOfWeek;
 		this.shiftList = new ArrayList<Shift>();
 		this.eventList = new ArrayList<Event>();
+		year = Integer.parseInt(date.substring(0, 3));
+		month = Integer.parseInt(date.substring(5, 6));
+		day = Integer.parseInt(date.substring(8, 9));
 	}
 	public Day() {
 	}
@@ -23,6 +29,9 @@ public class Day {
 	}
 	public void setDate(String date) {
 		this.date = date;
+		year = Integer.parseInt(date.substring(0, 3));
+		month = Integer.parseInt(date.substring(5, 6));
+		day = Integer.parseInt(date.substring(8, 9));
 	}
 	public String getDayOfWeek() {
 		return dayOfWeek;
@@ -41,6 +50,15 @@ public class Day {
 	}
 	public void setEventList(ArrayList<Event> eventList) {
 		this.eventList = eventList;
+	}
+	public int getDay() {
+		return day;
+	}
+	public int getMonth() {
+		return month;
+	}
+	public int getYear() {
+		return year;
 	}
 	
 

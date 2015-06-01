@@ -1,30 +1,44 @@
 package ModelLayer;
 
 public class Shift {
-	private String job;
+	private int id;
+	private Job job;
 	private int startHour;
 	private int endHour;
 	private People worker;
 	private int xpRequired;
 	
-	public Shift(String job, int startHour, int endHour, People worker) {
+	public Shift(int id, Job job, int startHour, int endHour, People worker) {
 		super();
+		this.id = id;
 		this.job = job;
 		this.startHour = startHour;
 		this.endHour = endHour;
 		this.worker = worker;
 	}
 	
+	public Shift() {
+	}
+	
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
 	public int getXpRequired() {
 		return xpRequired;
 	}
 	public void setXpRequired(int xpRequired) {
 		this.xpRequired = xpRequired;
 	}
-	public String getJob() {
+	public Job getJob() {
 		return job;
 	}
-	public void setJob(String job) {
+	public void setJob(Job job) {
 		this.job = job;
 	}
 	public int getStartHour() {

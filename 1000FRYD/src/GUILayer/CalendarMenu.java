@@ -77,6 +77,7 @@ public class CalendarMenu extends JFrame {
 	private People[] user;
 	private CtrPeople ctrPeople;
 	private CtrGroup ctrG;
+	private CtrDay ctrDay;
 	private JPanel contentPane;
 	private JPanel topPanel;
 	private JPanel changePanelMiddle;
@@ -233,6 +234,7 @@ public class CalendarMenu extends JFrame {
 		int row = 0;
 		for(int column = 0; column < 7; column++){
 			final int cellDate[] = {dayy, month, year};
+			
 			JPanel changePanel_1 = new JPanel();
 			changePanel_1.addMouseListener(new MouseAdapter() {
 				@Override
@@ -439,6 +441,10 @@ public class CalendarMenu extends JFrame {
 		separator2.setForeground(new Color(95, 158, 160));
 		separator2.setBounds(12, 629, 945, 10);
 		changePanelMiddle.add(separator2);
+	}
+	
+	private void tableCalendarAlt(){
+		ArrayList<Day> week = ctrDay.getWeek(0);
 	}
 	
 	private void accountsMenu(People[] p)
@@ -967,7 +973,7 @@ public class CalendarMenu extends JFrame {
 		String[] columsName = null;
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBorder(new LineBorder(new Color(0, 0, 0)));
-		scrollPane.setBounds(224, 13, 522, 642);
+		scrollPane.setBounds(226, 13, 522, 642);
 		changePanelMiddle.add(scrollPane);
 		
 //		JTextArea infoT = new JTextArea();

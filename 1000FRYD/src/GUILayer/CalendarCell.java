@@ -31,11 +31,12 @@ import java.awt.SystemColor;
 
 import javax.swing.JToggleButton;
 
+import ModelLayer.Day;
+
 public class CalendarCell extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private Languages language;
-	
 	public static void main(String[] args, int day, int month, int year) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {

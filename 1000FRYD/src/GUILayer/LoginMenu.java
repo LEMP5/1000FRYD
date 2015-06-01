@@ -68,9 +68,10 @@ public class LoginMenu extends JFrame {
 	}
 	
 	private void picture() {
-		//JLabel background = new JLabel(new ImageIcon(getClass().getResource("/loginbackground.jpg")));
-		//getContentPane().add(background);
-		//background.setBounds(0, 0, 450, 300);
+		JLabel background = new JLabel(new ImageIcon(getClass().getResource("/loginbackground.jpg")));
+		getContentPane().add(background);
+		background.setBounds(0, 0, 450, 300);
+		System.out.println(System.getProperty("java.class.path"));
 	}
 	
 	private void refresh() {

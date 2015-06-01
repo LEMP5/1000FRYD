@@ -7,9 +7,12 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import ModelLayer.Day;
+import ModelLayer.Event;
+import ModelLayer.Job;
 
 public class DbDay {
 	private  Connection con;
+	private DbEvent dbEvent;
     /** Creates a new instance of DBEmployee */
     public DbDay() {
       con = DbConnection.getInstance().getDBcon();
@@ -85,6 +88,10 @@ public class DbDay {
                             stmt.close();
                             if(retrieveAssociation)
                             {
+                            	String date = dayObj.getDate();
+                                ArrayList<Event> eventList = dbEvent.miscWhere(" date = '" + date + "'", true);
+                                dayObj.setEventList(eventList);
+                                System.out.println("Day is selected");
                             }
 			}
                         else{ //no employee was found

@@ -15,13 +15,13 @@ public class DbJob {
       con = DbConnection.getInstance().getDBcon();
     }
     
-    public Job findJob(String name, boolean retriveAssociation)
+    public Job findJob(String name)
     {   String wClause = "  name = '" + name + "'";
-        return singleWhere(wClause, retriveAssociation);
+        return singleWhere(wClause);
     }
-    public Job searchJob(String name, boolean retriveAssociation)
+    public Job searchJob(String name)
     {   String wClause = "  name = '" + name + "'";
-        return singleWhere(wClause, retriveAssociation);
+        return singleWhere(wClause);
     }
     
     public int insertJob(Job job) throws Exception
@@ -90,32 +90,27 @@ public class DbJob {
    	        }
 		return(rc);
 	}
-	
-	//Singelwhere is used when we only select one Job 	
-	private Job singleWhere(String wClause, boolean retrieveAssociation)
+	 	
+	public Job singleWhere(String wClause)
 	{
 		ResultSet results;
 		Job jObj = new Job();
                 
 	        String query =  buildQuery(wClause);
                 System.out.println(query);
-		try{ // read the Job from the database
+		try{
 	 		Statement stmt = con.createStatement();
 	 		stmt.setQueryTimeout(5);
 	 		results = stmt.executeQuery(query);
 	 		
 	 		if( results.next() ){
                             jObj = buildJob(results);
-                            //assocaition is to be build
                             stmt.close();
-                            if(retrieveAssociation)
-                            {   
-                            }
 			}
                         else{ 
                             jObj = null;
                         }
-		}//end try	
+		}	
 	 	catch(Exception e){
 	 		System.out.println("Query exception: "+e);
 	 	}
@@ -124,7 +119,7 @@ public class DbJob {
 	//method to build the query
 	private String buildQuery(String wClause)
 	{
-	    String query="name, bartokens, room, duration FROM Job";
+	    String query=" Select name, bartokens, room, duration FROM Job";
 		
 		if (wClause.length()>0)
 			query=query+" WHERE "+ wClause;

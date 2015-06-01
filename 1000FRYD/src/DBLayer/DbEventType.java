@@ -4,14 +4,20 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 
 import ModelLayer.EventType;
+import ModelLayer.Job;
 
 public class DbEventType {
-private  Connection con;
+	private  Connection con;
+	private DbJob dbJ;
+	private DbPartJob dbPJ;
 	
     public DbEventType() {
       con = DbConnection.getInstance().getDBcon();
+      dbJ = new DbJob();
+      dbPJ = new DbPartJob();
     }
     
     public EventType findEventType(String name, boolean retriveAssociation)
@@ -90,7 +96,7 @@ private  Connection con;
          return evT;
       }
 	
-	private EventType singleWhere(String wClause, boolean retrieveAssociation)
+	public EventType singleWhere(String wClause, boolean retrieveAssociation)
 	{
 		ResultSet results;
 		EventType etObj = new EventType();
@@ -108,8 +114,13 @@ private  Connection con;
                             stmt.close();
                             if(retrieveAssociation)
                             {   
-                           
-                           
+                            	String name = etObj.getName();
+                                ArrayList<String> jobs = dbPJ.miscWhere(" type = '" + name + "'");
+                                ArrayList<Job> jobList = new ArrayList<Job>();
+                                for(int i = 0; i<jobs.size(); i++)
+                                	jobList.add(dbJ.findJob(jobs.get(i)));
+                                etObj.setJobList(jobList);
+                                System.out.println("EventType is selected");
                             }
 			}
                         else{ //no Event was found

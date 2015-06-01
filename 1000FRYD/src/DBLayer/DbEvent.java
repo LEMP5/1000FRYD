@@ -11,9 +11,11 @@ import ModelLayer.EventType;
 
 public class DbEvent {
 	private  Connection con;
+	private DbEventType dbET;
 	
     public DbEvent() {
       con = DbConnection.getInstance().getDBcon();
+      dbET = new DbEventType();
     }
     
     public ArrayList<Event> getAllEvents(boolean retriveAssociation)
@@ -22,6 +24,10 @@ public class DbEvent {
     }
     public Event findEvent(String id, boolean retriveAssociation)
     {   String wClause = "  id = '" + id + "'";
+        return singleWhere(wClause, retriveAssociation);
+    }
+    public Event findEventName(String name, boolean retriveAssociation)
+    {   String wClause = "  name = '" + name + "'";
         return singleWhere(wClause, retriveAssociation);
     }
     public ArrayList<Event> getEventsOnDay(String date, boolean retriveAssociation)
@@ -33,9 +39,10 @@ public class DbEvent {
    
      //insert a new Event
     public int insertEvent(Event ev) throws Exception
-    {  //call to get the next ssn number
+    {
         int nextID = GetMax.getMaxId("Select max(id) from Event");
         nextID = nextID + 1;
+        ev.setId(nextID);
         System.out.println("next id = " +  nextID);
   
        int rc = -1;
@@ -49,7 +56,7 @@ public class DbEvent {
                      
 
        System.out.println("insert : " + query);
-      try{ // insert new Event +  dependent
+      try{
           Statement stmt = con.createStatement();
           stmt.setQueryTimeout(5);
      	  rc = stmt.executeUpdate(query);
@@ -87,12 +94,12 @@ public class DbEvent {
 		return(rc);
 	}
 	
-	public int delete(String id)
+	public int delete(Event ev)
 	{
                int rc=-1;
 	  
 	  	String query="DELETE FROM Event WHERE id = '" +
-				id + "'";
+				ev.getId() + "'";
                 System.out.println(query);
 	  	try{ // delete from Event
 	 		Statement stmt = con.createStatement();
@@ -110,7 +117,7 @@ public class DbEvent {
     //michWere is used whenever we want to select more than one Event
 	
 	 
-	private ArrayList<Event> miscWhere(String wClause, boolean retrieveAssociation)
+	public ArrayList<Event> miscWhere(String wClause, boolean retrieveAssociation)
 	{
             ResultSet results;
 	    ArrayList<Event> list = new ArrayList<Event>();	
@@ -133,9 +140,9 @@ public class DbEvent {
                  {   //The EventType
                      for(Event evObj : list){
                         String type = evObj.getType().getName();
-                        EventType evType = singleWhereType(" name = '" + type + "'",false);
+                        EventType evType = dbET.singleWhere(" name = '" + type + "'",true);
                         evObj.setType(evType);
-                        System.out.println("Supervisor is seleceted");
+                        System.out.println("EventType is selected");
                        // here the department has to be selected as well
                      }
                  }//end if   
@@ -152,7 +159,7 @@ public class DbEvent {
 	private Event singleWhere(String wClause, boolean retrieveAssociation)
 	{
 		ResultSet results;
-		Event empObj = new Event();
+		Event evObj = new Event();
                 
 	        String query =  buildQuery(wClause);
                 System.out.println(query);
@@ -162,34 +169,34 @@ public class DbEvent {
 	 		results = stmt.executeQuery(query);
 	 		
 	 		if( results.next() ){
-                            empObj = buildEvent(results);
+                            evObj = buildEvent(results);
                             //assocaition is to be build
                             stmt.close();
                             if(retrieveAssociation)
-                            {   //The supervisor and department is to be build as well
-                                String superssn = empObj.getSupervisor().getSsn();
-                                Event superEmp = singleWhere(" ssn = '" + superssn + "'",false);
-                                empObj.setSupervisor(superEmp);
-                                System.out.println("Supervisor is seleceted");
-                               // here the department has to be selected as well
+                            {
+                            	if(evObj.getType()!=null){
+                            	String type = evObj.getType().getName();
+                                EventType evType = dbET.singleWhere(" name = '" + type + "'",true);
+                                evObj.setType(evType);
+                                System.out.println("EventType is selected");
                            
-                           
+                            	}
                             }
 			}
                         else{ //no Event was found
-                            empObj = null;
+                            evObj = null;
                         }
 		}//end try	
 	 	catch(Exception e){
 	 		System.out.println("Query exception: "+e);
 	 	}
-		return empObj;
+		return evObj;
 	}
 	
 	//method to build the query
 	private String buildQuery(String wClause)
 	{
-	    String query="SELECT id, name, description, startHour, endHour  FROM Event";
+	    String query="SELECT id, name, description, startHour, endHour, type  FROM Event";
 		
 		if (wClause.length()>0)
 			query=query+" WHERE "+ wClause;
@@ -199,11 +206,18 @@ public class DbEvent {
 	//method to build an Event object
 	private Event buildEvent(ResultSet results)
       {   Event evObj = new Event();
-          try{ // the columns from the table emplayee  are used
+          try{
+        	  	evObj.setId(results.getInt("id"));
+        	  	System.out.println(evObj.getId());
                 evObj.setName(results.getString("name"));
+                System.out.println(evObj.getName());
                 evObj.setDescription(results.getString("description"));
+                System.out.println("description");
                 evObj.setStartHour(results.getInt("startHour"));
+                System.out.println("startHour");
                 evObj.setEndHour(results.getInt("endHour"));
+                System.out.println("endHour");
+                if(results.getString("type") != null)
                 evObj.setType(new EventType(results.getString("type")));
           }
          catch(Exception e)
